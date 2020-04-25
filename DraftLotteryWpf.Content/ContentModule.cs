@@ -15,7 +15,7 @@ namespace DraftLotteryWpf.Content
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterForNavigation<ConfigureUsersPage>();
         }
     }
 }

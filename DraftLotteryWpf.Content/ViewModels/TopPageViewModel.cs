@@ -1,5 +1,6 @@
 ﻿using DraftLotteryWpf.Common;
 using DraftLotteryWpf.Content.Services;
+using DraftLotteryWpf.Content.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -23,6 +24,14 @@ namespace DraftLotteryWpf.Content.ViewModels
 
         #region コマンド・プロパティ
         /// <summary>
+        /// ユーザー追加コマンド
+        /// </summary>
+        public DelegateCommand AddUserToSelectedUsersCommand { get; private set; }
+        /// <summary>
+        /// ユーザー削除コマンド
+        /// </summary>
+        public DelegateCommand RemoveUserFromSelectedUsersCommand { get; private set; }
+        /// <summary>
         /// 開始コマンド
         /// </summary>
         public DelegateCommand StartCommand { get; private set; }
@@ -43,6 +52,26 @@ namespace DraftLotteryWpf.Content.ViewModels
         {
             get { return _allUsers; }
             set { SetProperty(ref _allUsers, value); }
+        }
+
+        private User _selectedUserInAllUsers;
+        /// <summary>
+        /// 一覧で選択しているユーザー
+        /// </summary>
+        public User SelectedUserInAllUsers
+        {
+            get { return _selectedUserInAllUsers; }
+            set { SetProperty(ref _selectedUserInAllUsers, value); }
+        }
+
+        private User _selectedUserInSelectedUsers;
+        /// <summary>
+        /// 選択されたユーザー情報で選択しているユーザー
+        /// </summary>
+        public User SelectedUserInSelectedUsers
+        {
+            get { return _selectedUserInSelectedUsers; }
+            set { SetProperty(ref _selectedUserInSelectedUsers, value); }
         }
 
         private List<User> _selectedUsers;
@@ -73,8 +102,13 @@ namespace DraftLotteryWpf.Content.ViewModels
             _eventAggregator = eventAggregator;
 
             // コマンドを定義
+            AddUserToSelectedUsersCommand = new DelegateCommand(ExecuteAddUserToSelectedUsersCommand, CanExecuteAddUserToSelectedUsersCommand);
+            AddUserToSelectedUsersCommand.ObservesProperty(() => SelectedUserInAllUsers);
+            RemoveUserFromSelectedUsersCommand = new DelegateCommand(ExecuteRemoveUserFromSelectedUsersCommand, CanExecuteRemoveUserFromSelectedUsersCommand);
+            RemoveUserFromSelectedUsersCommand.ObservesProperty(() => SelectedUserInSelectedUsers);
             StartCommand = new DelegateCommand(ExecuteStartCommand, CanExecuteStartCommand);
-            ConfigureUsersCommand = new DelegateCommand(ExecuteConfigureUsersCommand, CanExecuteConfigureUsersCommand);
+            StartCommand.ObservesProperty(() => SelectedUsers);
+            ConfigureUsersCommand = new DelegateCommand(ExecuteConfigureUsersCommand);
             ShowHistoriesCommand = new DelegateCommand(ExecuteShowHistoriesCommand, CanExecuteShowHistoriesCommand);
 
             // 初期化処理
@@ -83,9 +117,43 @@ namespace DraftLotteryWpf.Content.ViewModels
         }
 
         /// <summary>
+        /// ユーザーを追加する
+        /// </summary>
+        private void ExecuteAddUserToSelectedUsersCommand()
+        {
+            SelectedUsers.Add(SelectedUserInAllUsers);
+        }
+
+        /// <summary>
+        /// ユーザーが追加可能かどうかを判定する
+        /// </summary>
+        /// <returns></returns>
+        private bool CanExecuteAddUserToSelectedUsersCommand()
+        {
+            return SelectedUserInAllUsers != null && SelectedUsers.Contains(SelectedUserInAllUsers);
+        }
+
+        /// <summary>
+        /// ユーザーを削除する
+        /// </summary>
+        private void ExecuteRemoveUserFromSelectedUsersCommand()
+        {
+            SelectedUsers.Remove(SelectedUserInSelectedUsers);
+        }
+
+        /// <summary>
+        /// ユーザーが削除可能かどうかを判定する
+        /// </summary>
+        /// <returns></returns>
+        private bool CanExecuteRemoveUserFromSelectedUsersCommand()
+        {
+            return SelectedUserInSelectedUsers != null;
+        }
+
+        /// <summary>
         /// 抽選を開始する
         /// </summary>
-        public void ExecuteStartCommand()
+        private void ExecuteStartCommand()
         {
 
         }
@@ -96,30 +164,21 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <returns></returns>
         private bool CanExecuteStartCommand()
         {
-            return SelectedUsers.Count > 1;
+            return SelectedUsers != null && SelectedUsers.Count > 1;
         }
 
         /// <summary>
         /// ユーザー設定を実行する
         /// </summary>
-        public void ExecuteConfigureUsersCommand()
+        private void ExecuteConfigureUsersCommand()
         {
-
-        }
-
-        /// <summary>
-        /// ユーザー設定が実行可能かどうかを判定する
-        /// </summary>
-        /// <returns></returns>
-        private bool CanExecuteConfigureUsersCommand()
-        {
-            return false;
+            _regionManager.RequestNavigate("ContentRegion", nameof(ConfigureUsersPage));
         }
 
         /// <summary>
         /// 履歴確認を実行する
         /// </summary>
-        public void ExecuteShowHistoriesCommand()
+        private void ExecuteShowHistoriesCommand()
         {
 
         }
