@@ -1,5 +1,5 @@
 ﻿using DraftLotteryWpf.Common;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace DraftLotteryWpf.Content.Services
@@ -12,7 +12,7 @@ namespace DraftLotteryWpf.Content.Services
         /// <summary>
         /// ユーザー情報
         /// </summary>
-        private static List<User> _users;
+        private static ObservableCollection<User> _users;
 
         /// <summary>
         /// ファイルパス
@@ -25,14 +25,19 @@ namespace DraftLotteryWpf.Content.Services
         public static void Initialize()
         {
             CreateFileIfNotExists();
-            _users = XmlConverter.DeSerialize<List<User>>(_filePath);
+            _users = XmlConverter.DeSerialize<ObservableCollection<User>>(_filePath);
+            if (_users == null)
+            {
+                _users = new ObservableCollection<User>();
+                XmlConverter.Serialize(_users, _filePath);
+            }
         }
 
         /// <summary>
         /// ユーザー情報一覧を取得する
         /// </summary>
         /// <returns></returns>
-        public static List<User> GetUsers()
+        public static ObservableCollection<User> GetUsers()
         {
             return _users;
         }
@@ -100,7 +105,7 @@ namespace DraftLotteryWpf.Content.Services
             // ファイルが存在しなければ作る
             if (!System.IO.File.Exists(_filePath))
             {
-                _users = new List<User>();
+                _users = new ObservableCollection<User>();
                 XmlConverter.Serialize(_users, _filePath);
             }
         }

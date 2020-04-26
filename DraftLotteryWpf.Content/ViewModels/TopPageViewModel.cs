@@ -5,7 +5,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace DraftLotteryWpf.Content.ViewModels
 {
@@ -44,15 +44,15 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         public DelegateCommand ShowHistoriesCommand { get; private set; }
 
-        private List<User> _allUsers;
         /// <summary>
         /// ユーザー情報一覧
         /// </summary>
-        public List<User> AllUsers
-        {
-            get { return _allUsers; }
-            set { SetProperty(ref _allUsers, value); }
-        }
+        public ObservableCollection<User> AllUsers { get; set; } = new ObservableCollection<User>();
+
+        /// <summary>
+        /// 選択されたユーザー情報
+        /// </summary>
+        public ObservableCollection<User> SelectedUsers { get; set; } = new ObservableCollection<User>();
 
         private User _selectedUserInAllUsers;
         /// <summary>
@@ -74,16 +74,6 @@ namespace DraftLotteryWpf.Content.ViewModels
             set { SetProperty(ref _selectedUserInSelectedUsers, value); }
         }
 
-        private List<User> _selectedUsers;
-        /// <summary>
-        /// 選択されたユーザー情報
-        /// </summary>
-        public List<User> SelectedUsers
-        {
-            get { return _selectedUsers; }
-            set { SetProperty(ref _selectedUsers, value); }
-        }
-
         /// <summary>
         /// インスタンスを使い回すか
         /// </summary>
@@ -95,7 +85,7 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         /// <param name="regionManager"></param>
         /// <param name="eventAggregator"></param>
-        public TopPageViewModel(RegionManager regionManager, IEventAggregator eventAggregator)
+        public TopPageViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             // インタフェースを受け取る
             _regionManager = regionManager;
@@ -107,7 +97,7 @@ namespace DraftLotteryWpf.Content.ViewModels
             RemoveUserFromSelectedUsersCommand = new DelegateCommand(ExecuteRemoveUserFromSelectedUsersCommand, CanExecuteRemoveUserFromSelectedUsersCommand);
             RemoveUserFromSelectedUsersCommand.ObservesProperty(() => SelectedUserInSelectedUsers);
             StartCommand = new DelegateCommand(ExecuteStartCommand, CanExecuteStartCommand);
-            StartCommand.ObservesProperty(() => SelectedUsers);
+            StartCommand.ObservesProperty(() => SelectedUsers.Count);
             ConfigureUsersCommand = new DelegateCommand(ExecuteConfigureUsersCommand);
             ShowHistoriesCommand = new DelegateCommand(ExecuteShowHistoriesCommand, CanExecuteShowHistoriesCommand);
 
@@ -130,7 +120,7 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <returns></returns>
         private bool CanExecuteAddUserToSelectedUsersCommand()
         {
-            return SelectedUserInAllUsers != null && SelectedUsers.Contains(SelectedUserInAllUsers);
+            return SelectedUserInAllUsers != null && !SelectedUsers.Contains(SelectedUserInAllUsers);
         }
 
         /// <summary>
@@ -155,7 +145,8 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         private void ExecuteStartCommand()
         {
-
+            _regionManager.RequestNavigate("ContentRegion", nameof(LotteryPage));
+            _eventAggregator.GetEvent<MessageSentEvent>().Publish(SelectedUsers);
         }
 
         /// <summary>
@@ -164,7 +155,7 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <returns></returns>
         private bool CanExecuteStartCommand()
         {
-            return SelectedUsers != null && SelectedUsers.Count > 1;
+            return SelectedUsers.Count > 1;
         }
 
         /// <summary>

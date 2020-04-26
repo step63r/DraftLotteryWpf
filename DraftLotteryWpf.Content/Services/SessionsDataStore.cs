@@ -26,6 +26,11 @@ namespace DraftLotteryWpf.Content.Services
         {
             CreateFileIfNotExists();
             _sessions = XmlConverter.DeSerialize<List<Session>>(_filePath);
+            if (_sessions == null)
+            {
+                _sessions = new List<Session>();
+                XmlConverter.Serialize(_sessions, _filePath);
+            }
         }
 
         /// <summary>

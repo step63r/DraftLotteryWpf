@@ -7,7 +7,36 @@
              mc:Ignorable="d"
              d:DesignHeight="768" d:DesignWidth="1024"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
-            
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="5">
+            <ListView ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" DisplayMemberPath="Name"/>
+        </Grid>
+        <Grid Grid.Row="1" Margin="5">
+            <TextBox Text="{Binding SelectedUser.Name, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Margin="5">
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Content="戻る" Command="{Binding GoBackCommand}"/>
+            </Grid>
+            <Grid Grid.Column="4" Margin="5">
+                <Button Content="新規作成" Command="{Binding CreateNewCommand}"/>
+            </Grid>
+            <Grid Grid.Column="5" Margin="5">
+                <Button Content="更新" Command="{Binding UpdateCommand}"/>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

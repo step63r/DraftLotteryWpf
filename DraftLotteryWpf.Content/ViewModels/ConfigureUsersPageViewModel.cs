@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace DraftLotteryWpf.Content.ViewModels
 {
-    public class ConfigureUsersPageViewModel : BindableBase
+    public class ConfigureUsersPageViewModel : BindableBase, IRegionMemberLifetime
     {
         #region インタフェース
         /// <summary>
@@ -46,21 +46,16 @@ namespace DraftLotteryWpf.Content.ViewModels
             set { SetProperty(ref _selectedUser, value); }
         }
 
-        private bool _isChanged = false;
         /// <summary>
-        /// 変更フラグ
+        /// インスタンスを使い回すか
         /// </summary>
-        public bool IsChanged
-        {
-            get { return _isChanged; }
-            set { SetProperty(ref _isChanged, value); }
-        }
+        public bool KeepAlive { get; } = false;
         #endregion
 
         /// <summary>
         /// ユーザー一覧
         /// </summary>
-        public ObservableCollection<User> Users { get; set; }
+        public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
 
         /// <summary>
         /// コンストラクタ
@@ -76,18 +71,18 @@ namespace DraftLotteryWpf.Content.ViewModels
             // コマンドを定義
             CreateNewCommand = new DelegateCommand(ExecuteCreateNewCommand);
             UpdateCommand = new DelegateCommand(ExecuteUpdateCommand, CanExecuteUpdateCommand);
+            UpdateCommand.ObservesProperty(() => SelectedUser);
+            UpdateCommand.ObservesProperty(() => SelectedUser.Name);
             GoBackCommand = new DelegateCommand(ExecuteGoBackCommand);
 
-            foreach (var user in UsersDataStore.GetUsers())
-            {
-                Users.Add(user);
-            }
+            RefreshUsers();
+            SelectedUser = new User();
         }
 
         /// <summary>
         /// 新規作成を実行する
         /// </summary>
-        public void ExecuteCreateNewCommand()
+        private void ExecuteCreateNewCommand()
         {
             SelectedUser = new User();
         }
@@ -95,16 +90,17 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <summary>
         /// 更新を実行する
         /// </summary>
-        public void ExecuteUpdateCommand()
+        private void ExecuteUpdateCommand()
         {
-            if (UsersDataStore.GetUser(SelectedUser.Guid) is null)
-            {
-                UsersDataStore.UpdateUser(SelectedUser);
-            }
-            else
+            if (UsersDataStore.GetUser(SelectedUser.Guid) == null)
             {
                 UsersDataStore.AddUser(SelectedUser);
             }
+            else
+            {
+                UsersDataStore.UpdateUser(SelectedUser);
+            }
+            RefreshUsers();
             SelectedUser = new User();
         }
 
@@ -120,9 +116,21 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <summary>
         /// 戻る
         /// </summary>
-        public void ExecuteGoBackCommand()
+        private void ExecuteGoBackCommand()
         {
             _regionManager.RequestNavigate("ContentRegion", nameof(TopPage));
+        }
+
+        /// <summary>
+        /// ユーザー一覧を更新する
+        /// </summary>
+        private void RefreshUsers()
+        {
+            Users.Clear();
+            foreach (var user in UsersDataStore.GetUsers())
+            {
+                Users.Add(user);
+            }
         }
     }
 }

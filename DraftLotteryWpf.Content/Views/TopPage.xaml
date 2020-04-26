@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <ListBox ItemsSource="{Binding AllUsers}" SelectedItem="{Binding SelectedUserInAllUsers}" DisplayMemberPath="Name"/>
+                <ListView ItemsSource="{Binding AllUsers}" SelectedItem="{Binding SelectedUserInAllUsers}" DisplayMemberPath="Name"/>
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -47,7 +47,7 @@
                 </Grid>
             </Grid>
             <Grid Grid.Column="2">
-                <ListBox ItemsSource="{Binding SelectedUsers}" SelectedItem="{Binding SelectedUserInSelectedUsers}" DisplayMemberPath="Name"/>
+                <ListView ItemsSource="{Binding SelectedUsers}" SelectedItem="{Binding SelectedUserInSelectedUsers}" DisplayMemberPath="Name"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="2">
