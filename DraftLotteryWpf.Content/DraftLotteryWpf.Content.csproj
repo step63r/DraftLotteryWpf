@@ -66,10 +66,14 @@
     <Compile Include="Services\SessionsDataStore.cs" />
     <Compile Include="Services\UsersDataStore.cs" />
     <Compile Include="ViewModels\ConfigureUsersPageViewModel.cs" />
+    <Compile Include="ViewModels\HistoriesPageViewModel.cs" />
     <Compile Include="ViewModels\LotteryPageViewModel.cs" />
     <Compile Include="ViewModels\TopPageViewModel.cs" />
     <Compile Include="Views\ConfigureUsersPage.xaml.cs">
       <DependentUpon>ConfigureUsersPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HistoriesPage.xaml.cs">
+      <DependentUpon>HistoriesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LotteryPage.xaml.cs">
       <DependentUpon>LotteryPage.xaml</DependentUpon>
@@ -89,6 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ConfigureUsersPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HistoriesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

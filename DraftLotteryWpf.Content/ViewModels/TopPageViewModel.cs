@@ -54,6 +54,11 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         public ObservableCollection<User> SelectedUsers { get; set; } = new ObservableCollection<User>();
 
+        /// <summary>
+        /// セッション情報一覧
+        /// </summary>
+        public ObservableCollection<Session> Sessions { get; set; } = new ObservableCollection<Session>();
+
         private User _selectedUserInAllUsers;
         /// <summary>
         /// 一覧で選択しているユーザー
@@ -100,10 +105,10 @@ namespace DraftLotteryWpf.Content.ViewModels
             StartCommand.ObservesProperty(() => SelectedUsers.Count);
             ConfigureUsersCommand = new DelegateCommand(ExecuteConfigureUsersCommand);
             ShowHistoriesCommand = new DelegateCommand(ExecuteShowHistoriesCommand, CanExecuteShowHistoriesCommand);
-
-            // 初期化処理
-            UsersDataStore.Initialize();
+            ShowHistoriesCommand.ObservesProperty(() => Sessions.Count);
+            
             AllUsers = UsersDataStore.GetUsers();
+            Sessions = SessionsDataStore.GetSessions();
         }
 
         /// <summary>
@@ -171,7 +176,7 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         private void ExecuteShowHistoriesCommand()
         {
-
+            _regionManager.RequestNavigate("ContentRegion", nameof(HistoriesPage));
         }
 
         /// <summary>
@@ -180,7 +185,7 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// <returns></returns>
         private bool CanExecuteShowHistoriesCommand()
         {
-            return false;
+            return Sessions.Count > 0;
         }
     }
 }

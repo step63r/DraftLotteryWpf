@@ -18,6 +18,7 @@ namespace DraftLotteryWpf.Content
             containerRegistry.RegisterForNavigation<TopPage>();
             containerRegistry.RegisterForNavigation<LotteryPage>();
             containerRegistry.RegisterForNavigation<ConfigureUsersPage>();
+            containerRegistry.RegisterForNavigation<HistoriesPage>();
         }
     }
 }

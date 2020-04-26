@@ -1,5 +1,5 @@
 ﻿using DraftLotteryWpf.Common;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace DraftLotteryWpf.Content.Services
@@ -12,12 +12,12 @@ namespace DraftLotteryWpf.Content.Services
         /// <summary>
         /// セッション情報
         /// </summary>
-        private static List<Session> _sessions;
+        private static ObservableCollection<Session> _sessions;
 
         /// <summary>
         /// ファイルパス
         /// </summary>
-        private static string _filePath = string.Format(@"{0}\{1}", Path.BaseDir, Path.SessionsFileName);
+        private static readonly string _filePath = string.Format(@"{0}\{1}", Path.BaseDir, Path.SessionsFileName);
 
         /// <summary>
         /// 初期化処理
@@ -25,10 +25,10 @@ namespace DraftLotteryWpf.Content.Services
         public static void Initialize()
         {
             CreateFileIfNotExists();
-            _sessions = XmlConverter.DeSerialize<List<Session>>(_filePath);
+            _sessions = XmlConverter.DeSerialize<ObservableCollection<Session>>(_filePath);
             if (_sessions == null)
             {
-                _sessions = new List<Session>();
+                _sessions = new ObservableCollection<Session>();
                 XmlConverter.Serialize(_sessions, _filePath);
             }
         }
@@ -37,7 +37,7 @@ namespace DraftLotteryWpf.Content.Services
         /// セッション情報一覧を取得する
         /// </summary>
         /// <returns></returns>
-        public static List<Session> GetSessions()
+        public static ObservableCollection<Session> GetSessions()
         {
             return _sessions;
         }
@@ -99,13 +99,13 @@ namespace DraftLotteryWpf.Content.Services
         private static void CreateFileIfNotExists()
         {
             // ディレクトリ取得
-            var dirInfo = System.IO.Path.GetDirectoryName(_filePath);
+            string dirInfo = System.IO.Path.GetDirectoryName(_filePath);
             System.IO.Directory.CreateDirectory(dirInfo);
 
             // ファイルが存在しなければ作る
             if (!System.IO.File.Exists(_filePath))
             {
-                _sessions = new List<Session>();
+                _sessions = new ObservableCollection<Session>();
                 XmlConverter.Serialize(_sessions, _filePath);
             }
         }

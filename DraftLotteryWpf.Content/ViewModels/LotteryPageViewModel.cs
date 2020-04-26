@@ -1,4 +1,5 @@
 ﻿using DraftLotteryWpf.Common;
+using DraftLotteryWpf.Content.Services;
 using DraftLotteryWpf.Content.Views;
 using Prism.Commands;
 using Prism.Events;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Diagnostics;
 using System.Windows.Threading;
 
 namespace DraftLotteryWpf.Content.ViewModels
@@ -136,6 +136,13 @@ namespace DraftLotteryWpf.Content.ViewModels
         {
             _dispatcherTimer.Stop();
             IsStopped = true;
+
+            var session = new Session()
+            {
+                Name = DateTime.Now.ToString("yyyy/MM/dd (ddd) HH:mm:ss"),
+                Result = Result
+            };
+            SessionsDataStore.AddSession(session);
         }
 
         /// <summary>

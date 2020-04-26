@@ -17,7 +17,7 @@ namespace DraftLotteryWpf.Content.Services
         /// <summary>
         /// ファイルパス
         /// </summary>
-        private static string _filePath = string.Format(@"{0}\{1}", Path.BaseDir, Path.UsersFileName);
+        private static readonly string _filePath = string.Format(@"{0}\{1}", Path.BaseDir, Path.UsersFileName);
 
         /// <summary>
         /// 初期化処理
@@ -99,7 +99,7 @@ namespace DraftLotteryWpf.Content.Services
         private static void CreateFileIfNotExists()
         {
             // ディレクトリ取得
-            var dirInfo = System.IO.Path.GetDirectoryName(_filePath);
+            string dirInfo = System.IO.Path.GetDirectoryName(_filePath);
             System.IO.Directory.CreateDirectory(dirInfo);
 
             // ファイルが存在しなければ作る

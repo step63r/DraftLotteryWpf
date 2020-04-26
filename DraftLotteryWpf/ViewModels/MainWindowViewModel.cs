@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using DraftLotteryWpf.Content.Services;
+using Prism.Mvvm;
 
 namespace DraftLotteryWpf.ViewModels
 {
@@ -13,7 +14,9 @@ namespace DraftLotteryWpf.ViewModels
 
         public MainWindowViewModel()
         {
-
+            // 初期化処理
+            UsersDataStore.Initialize();
+            SessionsDataStore.Initialize();
         }
     }
 }

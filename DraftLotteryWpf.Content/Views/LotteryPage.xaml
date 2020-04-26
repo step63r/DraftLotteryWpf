@@ -4,9 +4,13 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:common="clr-namespace:DraftLotteryWpf.Common;assembly=DraftLotteryWpf.Common"
              mc:Ignorable="d"
              d:DesignHeight="768" d:DesignWidth="1024"
              prism:ViewModelLocator.AutoWireViewModel="True">
+    <UserControl.Resources>
+        <common:ItemContainerToIndexConverter x:Key="ItemToIndexConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
@@ -14,7 +18,17 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="5">
-            <ListView ItemsSource="{Binding Result}" DisplayMemberPath="Name"/>
+            <ListView ItemsSource="{Binding Result}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Converter={StaticResource ItemToIndexConverter}}"/>
+                            <TextBlock Text=". "/>
+                            <TextBlock Text="{Binding Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
         <Grid Grid.Row="1" Margin="5">
             <Button Content="ストップ" Command="{Binding StopCommand}" Height="auto"/>

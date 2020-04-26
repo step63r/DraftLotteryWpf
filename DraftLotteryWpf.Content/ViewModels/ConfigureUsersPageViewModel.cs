@@ -32,6 +32,10 @@ namespace DraftLotteryWpf.Content.ViewModels
         /// </summary>
         public DelegateCommand UpdateCommand { get; private set; }
         /// <summary>
+        /// 削除コマンド
+        /// </summary>
+        public DelegateCommand DeleteCommand { get; private set; }
+        /// <summary>
         /// 戻るコマンド
         /// </summary>
         public DelegateCommand GoBackCommand { get; private set; }
@@ -73,6 +77,8 @@ namespace DraftLotteryWpf.Content.ViewModels
             UpdateCommand = new DelegateCommand(ExecuteUpdateCommand, CanExecuteUpdateCommand);
             UpdateCommand.ObservesProperty(() => SelectedUser);
             UpdateCommand.ObservesProperty(() => SelectedUser.Name);
+            DeleteCommand = new DelegateCommand(ExecuteDeleteCommand, CanExecuteDeleteCommand);
+            DeleteCommand.ObservesProperty(() => SelectedUser);
             GoBackCommand = new DelegateCommand(ExecuteGoBackCommand);
 
             RefreshUsers();
@@ -111,6 +117,28 @@ namespace DraftLotteryWpf.Content.ViewModels
         private bool CanExecuteUpdateCommand()
         {
             return SelectedUser != null && !string.IsNullOrEmpty(SelectedUser.Name);
+        }
+
+        /// <summary>
+        /// 削除を実行する
+        /// </summary>
+        private void ExecuteDeleteCommand()
+        {
+            if (UsersDataStore.GetUser(SelectedUser.Guid) != null)
+            {
+                UsersDataStore.RemoveUser(SelectedUser);
+                RefreshUsers();
+                SelectedUser = new User();
+            }
+        }
+
+        /// <summary>
+        /// 削除が実行可能かどうかを判定する
+        /// </summary>
+        /// <returns></returns>
+        private bool CanExecuteDeleteCommand()
+        {
+            return SelectedUser != null && UsersDataStore.GetUser(SelectedUser.Guid) != null;
         }
 
         /// <summary>
