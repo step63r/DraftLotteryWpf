@@ -10,11 +10,12 @@ namespace DraftLotteryWpf.Content
         public void OnInitialized(IContainerProvider containerProvider)
         {
             var regionMan = containerProvider.Resolve<IRegionManager>();
-            regionMan.RegisterViewWithRegion("ContentRegion", typeof(TopPage));
+            regionMan.RequestNavigate("ContentRegion", "TopPage");
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterForNavigation<TopPage>();
             containerRegistry.RegisterForNavigation<ConfigureUsersPage>();
         }
     }

@@ -1,6 +1,6 @@
 ﻿using DraftLotteryWpf.Content;
-using DraftLotteryWpf.Content.Views;
 using DraftLotteryWpf.Views;
+using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
@@ -10,7 +10,7 @@ namespace DraftLotteryWpf
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    public partial class App : PrismApplication
     {
         protected override Window CreateShell()
         {
@@ -19,8 +19,7 @@ namespace DraftLotteryWpf
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<TopPage>();
-            containerRegistry.RegisterForNavigation<ConfigureUsersPage>();
+
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
